@@ -15,4 +15,3 @@ def sample_item_data():
         "description": "Test Description",
         "price": 99.99,
     }
-

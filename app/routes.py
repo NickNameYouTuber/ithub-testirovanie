@@ -38,4 +38,3 @@ async def delete_item(item_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with id {item_id} not found",
         )
-

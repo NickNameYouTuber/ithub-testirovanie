@@ -35,4 +35,3 @@ class ItemService:
                 self.items.pop(index)
                 return True
         return False
-

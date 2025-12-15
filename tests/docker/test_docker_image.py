@@ -44,7 +44,7 @@ class TestDockerImage:
             ["docker", "rm", docker_container_name],
             capture_output=True
         )
-        
+
         result = subprocess.run(
             [
                 "docker",
@@ -60,9 +60,9 @@ class TestDockerImage:
             text=True,
         )
         assert result.returncode == 0, f"Container start failed: {result.stderr}"
-        
+
         time.sleep(3)
-        
+
         container_status = subprocess.run(
             [
                 "docker",
@@ -94,25 +94,25 @@ class TestDockerImage:
 
     def test_docker_container_api_functionality(self, docker_container_name):
         base_url = "http://localhost:8001"
-        
+
         item_data = {
             "name": "Docker Test Item",
             "description": "Testing in container",
             "price": 99.99
         }
-        
+
         create_response = requests.post(
             f"{base_url}/api/items/", json=item_data, timeout=5
         )
         assert create_response.status_code == 201
-        
+
         created_item = create_response.json()
         item_id = created_item["id"]
-        
+
         get_response = requests.get(f"{base_url}/api/items/{item_id}", timeout=5)
         assert get_response.status_code == 200
         assert get_response.json()["name"] == item_data["name"]
-        
+
         health_response = requests.get(f"{base_url}/health", timeout=5)
         assert health_response.status_code == 200
 
@@ -131,4 +131,3 @@ class TestDockerImage:
         yield
         subprocess.run(["docker", "stop", docker_container_name], capture_output=True)
         subprocess.run(["docker", "rm", docker_container_name], capture_output=True)
-

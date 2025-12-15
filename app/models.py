@@ -18,4 +18,3 @@ class ItemResponse(BaseModel):
 
     class Config:
         from_attributes = True
-
