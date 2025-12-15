@@ -12,6 +12,10 @@ env:
   DOCKER_IMAGE: test-app
   DOCKER_TAG: latest
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   lint:
     name: Code Linting and Quality
@@ -175,7 +179,7 @@ jobs:
         continue-on-error: true
       
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -212,7 +216,7 @@ jobs:
           sleep 5
       
       - name: Run Docker tests
-        run: pytest tests/docker/ -v
+        run: pytest tests/docker/ -v --cov=app --cov-report=xml --cov-report=term --cov-fail-under=0
       
       - name: Check container logs
         if: always()

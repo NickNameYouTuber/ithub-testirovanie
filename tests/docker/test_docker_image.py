@@ -14,6 +14,11 @@ class TestDockerImage:
     def docker_container_name(self):
         return "test-app-container"
 
+    @pytest.fixture(scope="class")
+    def docker_port(self):
+        import random
+        return random.randint(8002, 9000)
+
     def test_docker_image_builds_successfully(self, docker_image_name):
         result = subprocess.run(
             ["docker", "build", "-t", docker_image_name, "."],
@@ -35,14 +40,18 @@ class TestDockerImage:
                 size_mb = float(size_str.replace("MB", ""))
                 assert size_mb < 500, f"Image size {size_mb}MB is too large"
 
-    def test_docker_container_starts(self, docker_image_name, docker_container_name):
+    def test_docker_container_starts(
+        self, docker_image_name, docker_container_name, docker_port
+    ):
         subprocess.run(
             ["docker", "stop", docker_container_name],
-            capture_output=True
+            capture_output=True,
+            timeout=5,
         )
         subprocess.run(
-            ["docker", "rm", docker_container_name],
-            capture_output=True
+            ["docker", "rm", "-f", docker_container_name],
+            capture_output=True,
+            timeout=5,
         )
 
         result = subprocess.run(
@@ -53,7 +62,7 @@ class TestDockerImage:
                 "--name",
                 docker_container_name,
                 "-p",
-                "8001:8000",
+                f"{docker_port}:8000",
                 docker_image_name,
             ],
             capture_output=True,
@@ -77,12 +86,12 @@ class TestDockerImage:
         )
         assert "Up" in container_status.stdout or container_status.returncode == 0
 
-    def test_docker_container_healthcheck(self, docker_container_name):
+    def test_docker_container_healthcheck(self, docker_container_name, docker_port):
         max_attempts = 10
         for attempt in range(max_attempts):
             try:
                 response = requests.get(
-                    "http://localhost:8001/health", timeout=2
+                    f"http://localhost:{docker_port}/health", timeout=2
                 )
                 if response.status_code == 200:
                     assert response.json()["status"] == "ok"
@@ -92,8 +101,10 @@ class TestDockerImage:
             time.sleep(1)
         pytest.fail("Health check failed after multiple attempts")
 
-    def test_docker_container_api_functionality(self, docker_container_name):
-        base_url = "http://localhost:8001"
+    def test_docker_container_api_functionality(
+        self, docker_container_name, docker_port
+    ):
+        base_url = f"http://localhost:{docker_port}"
 
         item_data = {
             "name": "Docker Test Item",
