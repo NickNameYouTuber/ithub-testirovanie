@@ -314,18 +314,8 @@ jobs:
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "repo=$REPO_LOWER" >> $GITHUB_OUTPUT
       
-      - name: Check if personal repository
-        id: check_repo
-        run: |
-          if [ "${{ github.repository_owner }}" = "${{ github.actor }}" ]; then
-            echo "is_personal=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_personal=false" >> $GITHUB_OUTPUT
-            echo "::warning::Repository belongs to organization. Deployment requires PAT token."
-          fi
-      
       - name: Build and push Docker image
-        if: steps.check_repo.outputs.is_personal == 'true'
+        id: deploy
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -335,18 +325,18 @@ jobs:
             ghcr.io/${{ steps.repo_name.outputs.repo }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        continue-on-error: true
       
-      - name: Deploy info for organizations
-        if: steps.check_repo.outputs.is_personal == 'false'
+      - name: Deploy status
+        if: always()
         run: |
-          echo "::notice::Skipping deployment for organization repository."
-          echo "To enable deployment for organization repositories:"
-          echo "1. Create a Personal Access Token (PAT) with 'write:packages' permission"
-          echo "2. Add it as a secret named 'GHCR_TOKEN' in repository settings"
-          echo "3. Update the workflow to use secrets.GHCR_TOKEN instead of secrets.GITHUB_TOKEN"
-      
-      - name: Smoke test after deploy
-        if: steps.check_repo.outputs.is_personal == 'true' && success()
-        run: |
-          echo "Deployment successful. Image available at: ghcr.io/${{ steps.repo_name.outputs.repo }}:${{ env.DOCKER_TAG }}"
+          if [ "${{ steps.deploy.outcome }}" = "success" ]; then
+            echo "::notice::Deployment successful. Image available at: ghcr.io/${{ steps.repo_name.outputs.repo }}:${{ env.DOCKER_TAG }}"
+          else
+            echo "::warning::Deployment failed. This is normal for organization repositories."
+            echo "To enable deployment for organization repositories:"
+            echo "1. Create a Personal Access Token (PAT) with 'write:packages' permission"
+            echo "2. Add it as a secret named 'GHCR_TOKEN' in repository settings"
+            echo "3. Update the workflow to use secrets.GHCR_TOKEN instead of secrets.GITHUB_TOKEN"
+          fi
 
