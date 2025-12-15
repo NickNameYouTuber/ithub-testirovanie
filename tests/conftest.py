@@ -13,6 +13,6 @@ def sample_item_data():
     return {
         "name": "Test Item",
         "description": "Test Description",
-        "price": 99.99
+        "price": 99.99,
     }
 

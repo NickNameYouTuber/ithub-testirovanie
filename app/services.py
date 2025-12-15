@@ -14,7 +14,7 @@ class ItemService:
             name=item_data.name,
             description=item_data.description,
             price=item_data.price,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         self.items.append(new_item)
         self.next_id += 1

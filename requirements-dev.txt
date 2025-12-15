@@ -9,5 +9,6 @@ pylint==3.0.2
 mypy==1.7.1
 pip-audit==2.6.2
 bandit==1.7.5
+pbr==6.0.0
 locust==2.17.0
 

@@ -25,7 +25,7 @@ async def get_item(item_id: int):
     if not item:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item with id {item_id} not found"
+            detail=f"Item with id {item_id} not found",
         )
     return item
 
@@ -36,6 +36,6 @@ async def delete_item(item_id: int):
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item with id {item_id} not found"
+            detail=f"Item with id {item_id} not found",
         )
 
