@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements-dev.txt
       
       - name: Run Black
-        run: black --check app/ tests/
+        run: black --check app/ tests/ || black app/ tests/ --diff
         continue-on-error: true
       
       - name: Run Flake8

@@ -4,7 +4,7 @@ from app.routes import router
 app = FastAPI(
     title="Test Application",
     description="Test application for CI/CD pipeline",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 app.include_router(router)
@@ -18,4 +18,3 @@ async def health_check():
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-

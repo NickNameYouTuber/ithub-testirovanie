@@ -9,7 +9,7 @@ class TestEndToEndScenarios:
         new_item = {
             "name": "E2E Test Item",
             "description": "End-to-end test scenario",
-            "price": 75.99
+            "price": 75.99,
         }
 
         create_response = client.post("/api/items/", json=new_item)
@@ -32,7 +32,7 @@ class TestEndToEndScenarios:
         items_to_create = [
             {"name": "Product A", "price": 10.0},
             {"name": "Product B", "price": 20.0},
-            {"name": "Product C", "price": 30.0}
+            {"name": "Product C", "price": 30.0},
         ]
 
         for item_data in items_to_create:
@@ -50,7 +50,7 @@ class TestEndToEndScenarios:
         item_data = {
             "name": "Unique Search Item",
             "description": "This should be findable",
-            "price": 42.0
+            "price": 42.0,
         }
 
         created = client.post("/api/items/", json=item_data).json()

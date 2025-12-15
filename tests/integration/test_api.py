@@ -8,7 +8,7 @@ class TestAPIIntegration:
         item_data = {
             "name": "Integration Test Item",
             "description": "Testing full lifecycle",
-            "price": 50.0
+            "price": 50.0,
         }
 
         create_response = client.post("/api/items/", json=item_data)

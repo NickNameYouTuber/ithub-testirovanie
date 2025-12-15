@@ -17,6 +17,7 @@ class TestDockerImage:
     @pytest.fixture(scope="class")
     def docker_port(self):
         import random
+
         return random.randint(8002, 9000)
 
     def test_docker_image_builds_successfully(self, docker_image_name):
@@ -24,7 +25,7 @@ class TestDockerImage:
             ["docker", "build", "-t", docker_image_name, "."],
             capture_output=True,
             text=True,
-            cwd=os.getcwd()
+            cwd=os.getcwd(),
         )
         assert result.returncode == 0, f"Build failed: {result.stderr}"
 
@@ -32,7 +33,7 @@ class TestDockerImage:
         result = subprocess.run(
             ["docker", "images", docker_image_name, "--format", "{{.Size}}"],
             capture_output=True,
-            text=True
+            text=True,
         )
         if result.returncode == 0 and result.stdout.strip():
             size_str = result.stdout.strip()
@@ -109,7 +110,7 @@ class TestDockerImage:
         item_data = {
             "name": "Docker Test Item",
             "description": "Testing in container",
-            "price": 99.99
+            "price": 99.99,
         }
 
         create_response = requests.post(
@@ -131,7 +132,7 @@ class TestDockerImage:
         result = subprocess.run(
             ["docker", "exec", docker_container_name, "whoami"],
             capture_output=True,
-            text=True
+            text=True,
         )
         if result.returncode == 0:
             user = result.stdout.strip()
@@ -140,5 +141,7 @@ class TestDockerImage:
     @pytest.fixture(scope="class", autouse=True)
     def cleanup_container(self, docker_container_name):
         yield
-        subprocess.run(["docker", "stop", docker_container_name], capture_output=True)
+        subprocess.run(
+            ["docker", "stop", docker_container_name], capture_output=True
+        )
         subprocess.run(["docker", "rm", docker_container_name], capture_output=True)
