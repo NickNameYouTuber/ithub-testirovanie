@@ -111,4 +111,3 @@ GitHub Actions workflow включает следующие этапы:
 - Python 3.10+
 - Docker
 - Git
-
