@@ -12,7 +12,9 @@ async def get_all_items():
     return item_service.get_all_items()
 
 
-@router.post("/", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", response_model=ItemResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_item(item: ItemCreate):
     return item_service.create_item(item)
 

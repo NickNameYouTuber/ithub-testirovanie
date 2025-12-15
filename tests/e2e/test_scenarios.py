@@ -67,7 +67,9 @@ class TestEndToEndScenarios:
         invalid_delete = client.delete("/api/items/99999")
         assert invalid_delete.status_code == status.HTTP_404_NOT_FOUND
         
-        invalid_create = client.post("/api/items/", json={"invalid": "data"})
+        invalid_create = client.post(
+            "/api/items/", json={"invalid": "data"}
+        )
         assert invalid_create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     def test_application_health_monitoring(self, client):

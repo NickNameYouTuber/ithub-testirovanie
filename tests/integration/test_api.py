@@ -32,7 +32,7 @@ class TestAPIIntegration:
 
     def test_multiple_items_creation(self, client):
         items_data = [
-            {"name": f"Item {i}", "price": float(i * 10)} 
+            {"name": f"Item {i}", "price": float(i * 10)}
             for i in range(1, 6)
         ]
         

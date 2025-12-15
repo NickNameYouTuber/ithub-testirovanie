@@ -47,22 +47,33 @@ class TestDockerImage:
         
         result = subprocess.run(
             [
-                "docker", "run", "-d",
-                "--name", docker_container_name,
-                "-p", "8001:8000",
-                docker_image_name
+                "docker",
+                "run",
+                "-d",
+                "--name",
+                docker_container_name,
+                "-p",
+                "8001:8000",
+                docker_image_name,
             ],
             capture_output=True,
-            text=True
+            text=True,
         )
         assert result.returncode == 0, f"Container start failed: {result.stderr}"
         
         time.sleep(3)
         
         container_status = subprocess.run(
-            ["docker", "ps", "--filter", f"name={docker_container_name}", "--format", "{{.Status}}"],
+            [
+                "docker",
+                "ps",
+                "--filter",
+                f"name={docker_container_name}",
+                "--format",
+                "{{.Status}}",
+            ],
             capture_output=True,
-            text=True
+            text=True,
         )
         assert "Up" in container_status.stdout or container_status.returncode == 0
 
@@ -70,7 +81,9 @@ class TestDockerImage:
         max_attempts = 10
         for attempt in range(max_attempts):
             try:
-                response = requests.get("http://localhost:8001/health", timeout=2)
+                response = requests.get(
+                    "http://localhost:8001/health", timeout=2
+                )
                 if response.status_code == 200:
                     assert response.json()["status"] == "ok"
                     return
@@ -88,7 +101,9 @@ class TestDockerImage:
             "price": 99.99
         }
         
-        create_response = requests.post(f"{base_url}/api/items/", json=item_data, timeout=5)
+        create_response = requests.post(
+            f"{base_url}/api/items/", json=item_data, timeout=5
+        )
         assert create_response.status_code == 201
         
         created_item = create_response.json()

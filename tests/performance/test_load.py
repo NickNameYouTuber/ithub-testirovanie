@@ -26,7 +26,9 @@ class TestPerformance:
 
     def test_get_all_items_performance(self, client, benchmark):
         for i in range(20):
-            client.post("/api/items/", json={"name": f"Item {i}", "price": float(i)})
+            client.post(
+                "/api/items/", json={"name": f"Item {i}", "price": float(i)}
+            )
         
         def get_all():
             return client.get("/api/items/")
@@ -46,12 +48,18 @@ class TestPerformance:
         import concurrent.futures
         
         def create_item(index):
-            return client.post("/api/items/", json={"name": f"Concurrent {index}", "price": float(index)})
-        
+            return client.post(
+                "/api/items/",
+                json={"name": f"Concurrent {index}", "price": float(index)},
+            )
+
         start_time = time.time()
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             futures = [executor.submit(create_item, i) for i in range(10)]
-            results = [future.result() for future in concurrent.futures.as_completed(futures)]
+            results = [
+                future.result()
+                for future in concurrent.futures.as_completed(futures)
+            ]
         
         elapsed_time = time.time() - start_time
         assert elapsed_time < 3.0

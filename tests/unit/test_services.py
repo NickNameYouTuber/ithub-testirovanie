@@ -6,7 +6,9 @@ from app.models import ItemCreate
 class TestItemService:
     def test_create_item_success(self):
         service = ItemService()
-        item_data = ItemCreate(name="Test Item", description="Test", price=10.0)
+        item_data = ItemCreate(
+            name="Test Item", description="Test", price=10.0
+        )
         
         result = service.create_item(item_data)
         
@@ -54,7 +56,9 @@ class TestItemService:
 
     def test_delete_item_existing(self):
         service = ItemService()
-        created_item = service.create_item(ItemCreate(name="Test Item", price=10.0))
+        created_item = service.create_item(
+            ItemCreate(name="Test Item", price=10.0)
+        )
         
         result = service.delete_item(created_item.id)
         
