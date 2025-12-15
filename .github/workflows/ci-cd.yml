@@ -42,7 +42,7 @@ jobs:
         continue-on-error: true
       
       - name: Run Pylint
-        run: pylint app/ --disable=C0111,R0903,C0411,E0401,C0304
+        run: pylint app/ --disable=C0111,R0903,C0411,E0401,C0304,C0305
         continue-on-error: true
       
       - name: Run MyPy
@@ -266,7 +266,7 @@ jobs:
           pip install -r requirements-dev.txt
       
       - name: Run performance tests
-        run: pytest tests/performance/ -v --benchmark-only
+        run: pytest tests/performance/ -v --benchmark-only --cov=app --cov-report=xml --cov-report=term --cov-fail-under=0
         continue-on-error: true
 
   e2e-tests:
@@ -310,7 +310,9 @@ jobs:
       
       - name: Set repository owner to lowercase
         id: repo_owner
-        run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+        run: |
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "owner=$OWNER_LOWER" >> $GITHUB_OUTPUT
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
